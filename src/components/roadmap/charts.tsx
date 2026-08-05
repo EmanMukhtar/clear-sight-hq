@@ -135,7 +135,7 @@ export function PriorityStack({ tasks }: { tasks: Task[] }) {
                 stackId="a"
                 fill={STATUS_META[s].dot}
                 name={STATUS_META[s].label}
-                radius={i === STATUSES.length - 1 ? [3, 3, 0, 0] : undefined}
+                radius={i === STATUSES.length - 1 ? [3, 3, 0, 0] : 0}
               />
             ))}
           </BarChart>
