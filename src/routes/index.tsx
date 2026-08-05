@@ -99,7 +99,7 @@ function Overview() {
                   {criticalPath.filter((t) => t.status !== "done").length > 0
                     ? `${criticalPath.filter((t) => t.status !== "done").length} item${
                         criticalPath.filter((t) => t.status !== "done").length === 1 ? "" : "s"
-                      } stand between Cleard and launch.`
+                      } ${criticalPath.filter((t) => t.status !== "done").length === 1 ? "stands" : "stand"} between Cleard and launch.`
                     : "Nothing is blocking launch right now."}
                 </h2>
 
