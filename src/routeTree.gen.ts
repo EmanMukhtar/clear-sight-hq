@@ -15,6 +15,7 @@ import { Route as CriticalPathRouteImport } from './routes/critical-path'
 import { Route as DepartmentsRouteImport } from './routes/departments'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ApiPublicTasksRouteImport } from './routes/api/public/tasks'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicTasksRoute = ApiPublicTasksRouteImport.update({
+  id: '/api/public/tasks',
+  path: '/api/public/tasks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +60,7 @@ export interface FileRoutesByFullPath {
   '/departments': typeof DepartmentsRoute
   '/roadmap': typeof RoadmapRoute
   '/settings': typeof SettingsRoute
+  '/api/public/tasks': typeof ApiPublicTasksRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +69,7 @@ export interface FileRoutesByTo {
   '/departments': typeof DepartmentsRoute
   '/roadmap': typeof RoadmapRoute
   '/settings': typeof SettingsRoute
+  '/api/public/tasks': typeof ApiPublicTasksRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +79,7 @@ export interface FileRoutesById {
   '/departments': typeof DepartmentsRoute
   '/roadmap': typeof RoadmapRoute
   '/settings': typeof SettingsRoute
+  '/api/public/tasks': typeof ApiPublicTasksRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +90,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/roadmap'
     | '/settings'
+    | '/api/public/tasks'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -89,6 +99,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/roadmap'
     | '/settings'
+    | '/api/public/tasks'
   id:
     | '__root__'
     | '/'
@@ -97,6 +108,7 @@ export interface FileRouteTypes {
     | '/departments'
     | '/roadmap'
     | '/settings'
+    | '/api/public/tasks'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +118,7 @@ export interface RootRouteChildren {
   DepartmentsRoute: typeof DepartmentsRoute
   RoadmapRoute: typeof RoadmapRoute
   SettingsRoute: typeof SettingsRoute
+  ApiPublicTasksRoute: typeof ApiPublicTasksRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -152,6 +165,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/tasks': {
+      id: '/api/public/tasks'
+      path: '/api/public/tasks'
+      fullPath: '/api/public/tasks'
+      preLoaderRoute: typeof ApiPublicTasksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -162,7 +182,18 @@ const rootRouteChildren: RootRouteChildren = {
   DepartmentsRoute: DepartmentsRoute,
   RoadmapRoute: RoadmapRoute,
   SettingsRoute: SettingsRoute,
+  ApiPublicTasksRoute: ApiPublicTasksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
