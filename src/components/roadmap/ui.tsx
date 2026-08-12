@@ -5,6 +5,7 @@ import {
   Clock,
   Search,
   SlidersHorizontal,
+  Trash2,
   User,
   X,
 } from "lucide-react";
@@ -20,6 +21,7 @@ import {
   type Task,
 } from "@/lib/roadmap-data";
 import { useRoadmap } from "@/lib/roadmap-store";
+import { AddTaskButton } from "./add-task-dialog";
 
 /* ---------------------------------- atoms --------------------------------- */
 
@@ -255,30 +257,57 @@ function InlineText({
 /* --------------------------------- task card ------------------------------ */
 
 export function TaskCard({ task, dense = false }: { task: Task; dense?: boolean }) {
-  const { updateTask } = useRoadmap();
+  const { updateTask, deleteTask } = useRoadmap();
   const [open, setOpen] = useState(false);
+  const [renaming, setRenaming] = useState(false);
   const deps = task.dependencies ?? [];
   const depDone = deps.filter((d) => d.done).length;
+  const isDone = task.status === "done";
 
   return (
     <div className="group rounded-lg border border-border bg-surface p-3 transition-colors hover:border-border-strong hover:bg-elevated">
       <div className="flex items-start gap-3">
-        <span
-          className="mt-1.5 h-2 w-2 shrink-0 rounded-full"
-          style={{ background: STATUS_META[task.status].dot }}
-        />
         <button
-          onClick={() => setOpen((o) => !o)}
-          className="flex-1 text-left text-[13px] leading-snug font-medium text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+          title={isDone ? "Mark as in progress" : "Mark complete"}
+          onClick={() => updateTask(task.id, { status: isDone ? "inprogress" : "done" })}
+          className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-colors"
+          style={{
+            borderColor: STATUS_META[task.status].dot,
+            background: isDone ? STATUS_META.done.dot : "transparent",
+          }}
         >
-          {task.name}
+          {isDone && <Check size={10} className="text-background" />}
         </button>
+        {renaming ? (
+          <input
+            autoFocus
+            defaultValue={task.name}
+            onBlur={(e) => {
+              const v = e.target.value.trim();
+              if (v && v !== task.name) updateTask(task.id, { name: v });
+              setRenaming(false);
+            }}
+            onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+            className="flex-1 rounded-md border border-border bg-elevated px-1.5 py-0.5 text-[13px] outline-none focus:border-ring"
+          />
+        ) : (
+          <button
+            onClick={() => setOpen((o) => !o)}
+            onDoubleClick={() => setRenaming(true)}
+            className={`flex-1 text-left text-[13px] leading-snug font-medium focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none ${
+              isDone ? "text-muted-foreground" : "text-foreground"
+            }`}
+          >
+            {task.name}
+          </button>
+        )}
         {task.blockingLaunch && (
           <span title="Blocks launch" className="mt-0.5 text-blocked">
             <AlertTriangle size={13} />
           </span>
         )}
       </div>
+
 
       <div className="mt-2.5 flex flex-wrap items-center gap-1.5 pl-5">
         <PriorityBadge priority={task.priority} />
@@ -371,6 +400,15 @@ export function TaskCard({ task, dense = false }: { task: Task; dense?: boolean 
               >
                 <AlertTriangle size={11} />
                 Blocks launch
+              </button>
+              <button
+                onClick={() => {
+                  if (confirm(`Delete "${task.name}"?`)) void deleteTask(task.id);
+                }}
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:bg-blocked-soft hover:text-blocked"
+              >
+                <Trash2 size={11} />
+                Delete
               </button>
             </div>
           )}
@@ -474,6 +512,9 @@ export function FilterToolbar() {
         <span className="num ml-auto pr-1 text-[12px] text-muted-foreground">
           {filtered.length}/{tasks.length}
         </span>
+
+        <AddTaskButton />
+
       </div>
 
       {expanded && (

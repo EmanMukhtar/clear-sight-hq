@@ -46,14 +46,31 @@ function SettingsPage() {
         </Card>
 
         <Card className="p-5">
-          <SectionTitle title="Local data" hint={`${tasks.length} tasks stored in this browser`} />
+          <SectionTitle
+            title="Live data"
+            hint={`${tasks.length} tasks stored in the shared database — edits sync to everyone instantly`}
+          />
           <button
             onClick={resetTasks}
-            className="rounded-md border border-blocked-line bg-blocked-soft px-3 py-1.5 text-[13px] font-medium text-blocked transition-opacity hover:opacity-90"
+            className="rounded-md border border-border bg-elevated px-3 py-1.5 text-[13px] font-medium text-foreground transition-opacity hover:opacity-90"
           >
-            Reset to seeded roadmap
+            Refresh from database
           </button>
         </Card>
+
+        <Card className="p-5">
+          <SectionTitle
+            title="Automation API"
+            hint="Point any AI agent or script at these endpoints to read and change the schedule"
+          />
+          <pre className="overflow-x-auto rounded-md border border-border bg-elevated p-3 text-[12px] leading-relaxed text-muted-foreground">
+            {`GET    /api/public/tasks
+POST   /api/public/tasks        { name, department, category, status, priority, owner, eta, note, blockingLaunch }
+PATCH  /api/public/tasks        { id, ...fields }
+DELETE /api/public/tasks?id=...`}
+          </pre>
+        </Card>
+
       </div>
     </Shell>
   );
