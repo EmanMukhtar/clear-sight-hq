@@ -5,6 +5,7 @@ import {
   Clock,
   Search,
   SlidersHorizontal,
+  Trash2,
   User,
   X,
 } from "lucide-react";
@@ -20,6 +21,7 @@ import {
   type Task,
 } from "@/lib/roadmap-data";
 import { useRoadmap } from "@/lib/roadmap-store";
+import { AddTaskButton } from "./add-task-dialog";
 
 /* ---------------------------------- atoms --------------------------------- */
 
@@ -398,6 +400,15 @@ export function TaskCard({ task, dense = false }: { task: Task; dense?: boolean 
               >
                 <AlertTriangle size={11} />
                 Blocks launch
+              </button>
+              <button
+                onClick={() => {
+                  if (confirm(`Delete "${task.name}"?`)) void deleteTask(task.id);
+                }}
+                className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11px] text-muted-foreground transition-colors hover:bg-blocked-soft hover:text-blocked"
+              >
+                <Trash2 size={11} />
+                Delete
               </button>
             </div>
           )}
