@@ -22,7 +22,6 @@ export const Route = createFileRoute("/roadmap")({
 });
 
 const BANDS: { key: string; label: string; hint: string; match: (t: Task) => boolean }[] = [
-  { key: "done", label: "Completed", hint: "Shipped and verified", match: (t) => t.status === "done" },
   {
     key: "inprogress",
     label: "Current sprint",
@@ -41,7 +40,9 @@ const BANDS: { key: string; label: string; hint: string; match: (t: Task) => boo
     hint: "Unscheduled and blocked work",
     match: (t) => t.status === "blocked" || (t.status === "next" && !t.eta && t.priority === "low"),
   },
+  { key: "done", label: "Completed", hint: "Shipped and verified", match: (t) => t.status === "done" },
 ];
+
 
 function RoadmapPage() {
   const { filtered } = useRoadmap();
