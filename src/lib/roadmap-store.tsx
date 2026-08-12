@@ -9,6 +9,7 @@ import {
   type ReactNode,
 } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import type { Dependency, Meta, Task } from "./roadmap-data";
 
 export interface Filters {
@@ -95,7 +96,8 @@ function toRow(patch: Partial<Task>) {
   if (patch.owner !== undefined) row["owner"] = patch.owner;
   if (patch.eta !== undefined) row["eta"] = patch.eta;
   if (patch.blockingLaunch !== undefined) row["blocking_launch"] = patch.blockingLaunch;
-  if (patch.dependencies !== undefined) row["dependencies"] = patch.dependencies;
+  if (patch.dependencies !== undefined)
+    row["dependencies"] = patch.dependencies as unknown as Json;
   if (patch.note !== undefined) row["note"] = patch.note;
   return row;
 }
@@ -143,7 +145,7 @@ export function RoadmapProvider({ children }: { children: ReactNode }) {
 
   const updateTask = useCallback((id: string, patch: Partial<Task>) => {
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...patch } : t)));
-    void supabase.from("roadmap_tasks").update(toRow(patch)).eq("id", id);
+    void supabase.from("roadmap_tasks").update(toRow(patch) as never).eq("id", id);
   }, []);
 
   const addTask = useCallback(
@@ -162,7 +164,7 @@ export function RoadmapProvider({ children }: { children: ReactNode }) {
         note: task.note ?? "",
         position: maxPos + 100,
       };
-      await supabase.from("roadmap_tasks").insert(payload);
+      await supabase.from("roadmap_tasks").insert(payload as never);
       await refresh();
     },
     [refresh],
