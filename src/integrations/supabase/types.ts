@@ -14,7 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      roadmap_settings: {
+        Row: {
+          id: string
+          launch_date: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          launch_date?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          launch_date?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      roadmap_tasks: {
+        Row: {
+          blocking_launch: boolean
+          category: string
+          created_at: string
+          department: string
+          dependencies: Json
+          eta: string
+          id: string
+          name: string
+          note: string
+          owner: string
+          position: number
+          priority: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          blocking_launch?: boolean
+          category?: string
+          created_at?: string
+          department?: string
+          dependencies?: Json
+          eta?: string
+          id?: string
+          name: string
+          note?: string
+          owner?: string
+          position?: number
+          priority?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          blocking_launch?: boolean
+          category?: string
+          created_at?: string
+          department?: string
+          dependencies?: Json
+          eta?: string
+          id?: string
+          name?: string
+          note?: string
+          owner?: string
+          position?: number
+          priority?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
